@@ -1,0 +1,185 @@
+/* LoginForm.module.css */
+.loginContainer {              /* CHANGÉ: de login-container */
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f3f0;
+  overflow: hidden;
+}
+
+.backgroundLeft,              /* CHANGÉ: de background-left */
+.backgroundRight {            /* CHANGÉ: de background-right */
+  position: absolute;
+  top: 0;
+  width: 300px;
+  height: 100%;
+  z-index: 1;
+}
+
+.backgroundLeft {             /* CHANGÉ: de background-left */
+  left: 0;
+}
+
+.backgroundRight {            /* CHANGÉ: de background-right */
+  right: 0;
+}
+
+.bgImageLeft,                 /* CHANGÉ: de bg-image-left */
+.bgImageRight {               /* CHANGÉ: de bg-image-right */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.6;
+}
+
+.loginFormWrapper {           /* CHANGÉ: de login-form-wrapper */
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loginCard {                  /* CHANGÉ: de login-card */
+  background-color: rgba(240, 235, 230, 0.95);
+  padding: 60px 80px;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  text-align: center;
+  min-width: 500px;
+  backdrop-filter: blur(10px);
+}
+
+.brandTitle {                 /* CHANGÉ: de brand-title */
+  font-size: 48px;
+  font-weight: 300;
+  color: #b19cd9;
+  margin-bottom: 10px;
+  font-family: "Coiny";
+  letter-spacing: 2px;
+}
+
+.welcomeText {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 40px;
+  font-family: "BreeSerif";
+}
+
+.loginForm {                  /* CHANGÉ: de login-form */
+  width: 100%;
+}
+
+.inputGroup {                 /* CHANGÉ: de input-group */
+  margin-bottom: 20px;
+}
+
+.formInput {                  /* CHANGÉ: de form-input */
+  width: 100%;
+  padding: 18px 25px;
+  font-size: 16px;
+  border: 2px solid #333;
+  border-radius: 50px;
+  background-color: transparent;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: Arial, sans-serif;
+  color: #666;
+  box-sizing: border-box;
+}
+
+.formInput:focus {            /* CHANGÉ: de form-input:focus */
+  border-color: #b19cd9;
+  transform: scale(1.02);
+}
+
+.formInput::placeholder {     /* CHANGÉ: de form-input::placeholder */
+  color: #aaa;
+  font-style: italic;
+}
+
+.loginButton {                /* CHANGÉ: de login-button */
+  width: 200px;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+  background-color: #b19cd9;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+  font-family: Arial, sans-serif;
+}
+
+.loginButton:hover {          /* CHANGÉ: de login-button:hover */
+  background-color: #9d7ec7;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(177, 156, 217, 0.4);
+}
+
+.loginButton:active {         /* CHANGÉ: de login-button:active */
+  transform: translateY(0);
+}
+
+.formFooter {                 /* CHANGÉ: de form-footer */
+  margin-top: 30px;
+}
+
+.forgotLink {                 /* CHANGÉ: de forgot-link */
+  color: #888;
+  text-decoration: none;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 15px;
+  transition: color 0.3s ease;
+}
+
+.forgotLink:hover {           /* CHANGÉ: de forgot-link:hover */
+  color: #b19cd9;
+}
+
+.signupText {                 /* CHANGÉ: de signup-text */
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+.signupLink {                 /* CHANGÉ: de signup-link */
+  color: #b19cd9;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.signupLink:hover {           /* CHANGÉ: de signup-link:hover */
+  color: #9d7ec7;
+  text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .loginCard {                /* CHANGÉ: de login-card */
+    padding: 40px 30px;
+    min-width: 300px;
+    margin: 20px;
+  }
+
+  .backgroundLeft,            /* CHANGÉ: de background-left */
+  .backgroundRight {          /* CHANGÉ: de background-right */
+    width: 150px;
+  }
+
+  .brandTitle {               /* CHANGÉ: de brand-title */
+    font-size: 36px;
+  }
+
+  .welcomeText {              /* CHANGÉ: de welcome-text */
+    font-size: 22px;
+  }
+}

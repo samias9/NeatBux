@@ -1,0 +1,21 @@
+@font-face {
+    font-family: "BreeSerif";
+    src:
+    url("./fonts/BreeSerif-Regular.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+font-family: "Coiny";
+src:
+url("./fonts/Coiny-Regular.ttf");
+font-weight: normal;
+font-style: normal;
+}
+
+:root {
+    --primary-color: #333;
+    --secondary-color: #c7acc6;
+    --light-color: #a6a6a6;
+}
