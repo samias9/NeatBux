@@ -1,9 +1,11 @@
 import './App.css'
-import LoginForm from './components/Auth/LoginForm/LoginForm.jsx'
+import Header from './components/Header/header.jsx'
+import Dashboard from './Pages/DashBoard/dashboard.jsx';
+
 function App() {
 
   return (
-    <LoginForm />
+    <Dashboard/>
   )
 }
 

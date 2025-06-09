@@ -1,0 +1,378 @@
+/* RecentTransactions.module.css */
+.recentTransactionsContainer {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.transactionsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.5rem 1.5rem 1rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.headerTitle h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+}
+
+.headerTitle p {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 0.25rem;
+  background: #f8fafc;
+  padding: 0.25rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.filterBtn {
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filterBtn:hover {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.filterBtn.active {
+  background: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.viewAllBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.viewAllBtn:hover {
+  background: #f8fafc;
+  border-color: #d1d5db;
+  color: #475569;
+}
+
+.transactionsList {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.transactionItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f8fafc;
+  transition: background-color 0.2s ease;
+}
+
+.transactionItem:hover {
+  background: #f8fafc;
+}
+
+.transactionItem:last-child {
+  border-bottom: none;
+}
+
+.transactionIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.categoryEmoji {
+  font-size: 1.5rem;
+}
+
+.transactionDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.transactionMain {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.transactionDescription {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.transactionCategory {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.transactionMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.transactionDate {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.transactionStatus {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.transactionStatus.completed {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.transactionStatus.pending {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.transactionStatus.failed {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.transactionAmount {
+  text-align: right;
+  margin-right: 0.5rem;
+}
+
+.amount {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.amount.income {
+  color: #10b981;
+}
+
+.amount.expense {
+  color: #ef4444;
+}
+
+.transactionActions {
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.transactionItem:hover .transactionActions {
+  opacity: 1;
+}
+
+.actionBtn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.actionBtn:hover {
+  background: #e2e8f0;
+}
+
+.editBtn:hover {
+  background: #dbeafe;
+  color: #3b82f6;
+}
+
+.deleteBtn:hover {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: #64748b;
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.emptyState h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 0.5rem 0;
+}
+
+.emptyState p {
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.transactionsFooter {
+  padding: 1rem 1.5rem;
+  text-align: center;
+  border-top: 1px solid #f1f5f9;
+}
+
+.loadMoreBtn {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.loadMoreBtn:hover {
+  background: #f8fafc;
+  border-color: #d1d5db;
+  color: #475569;
+}
+
+/* Mode responsive */
+@media (max-width: 1024px) {
+  .transactionsHeader {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .headerActions {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 768px) {
+  .transactionsHeader {
+    padding: 1rem;
+  }
+
+  .transactionItem {
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .transactionIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .categoryEmoji {
+    font-size: 1.25rem;
+  }
+
+  .transactionMain {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .transactionActions {
+    opacity: 1;
+  }
+
+  .headerActions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .filterButtons {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .transactionItem {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .transactionHeaderRow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .transactionAmount {
+    text-align: left;
+    margin-right: 0;
+  }
+
+  .filterButtons {
+    flex-direction: column;
+  }
+
+  .filterBtn {
+    text-align: center;
+  }
+}
