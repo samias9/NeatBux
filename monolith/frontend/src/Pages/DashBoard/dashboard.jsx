@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header/header';
 import StatsCard from '../../components/StatsCard/statsCard';
+import MonthlyChart from '../../components/MonthlyChart/monthlyChart';
 import styles from './Dashboard.module.css';
+import RecentTransactions from '../../components/RecentTransactions/recentTransactions';
 
 export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState({
@@ -93,27 +95,6 @@ export default function Dashboard() {
     setSelectedPeriod(period);
   };
 
-  const handleViewAllTransactions = () => {
-    // Navigation vers la page des transactions
-    console.log('Navigation vers /transactions');
-    // Ici vous pouvez utiliser react-router pour naviguer
-    // navigate('/transactions');
-  };
-
-  const handleEditTransaction = (transaction) => {
-    console.log('Éditer la transaction:', transaction);
-    // Ouvrir un modal d'édition ou naviguer vers le formulaire
-  };
-
-  const handleDeleteTransaction = (transactionId) => {
-    console.log('Supprimer la transaction:', transactionId);
-    // Appel API pour supprimer la transaction
-    setDashboardData(prev => ({
-      ...prev,
-      transactions: prev.transactions.filter(t => t.id !== transactionId)
-    }));
-  };
-
   const handleRefreshData = () => {
     setDashboardData(prev => ({ ...prev, loading: true }));
     // Relancer le chargement des données
@@ -148,49 +129,7 @@ export default function Dashboard() {
 
   return (
     <div className={styles.dashboardContainer}>
-        <Header />
-        <StatsCard />
-        {/* En-tête du tableau de bord */}
-      <div className={styles.dashboardHeader}>
-        <div className={styles.headerContent}>
-          <div className={styles.headerTitle}>
-            <h1>Tableau de bord</h1>
-            <p>Bienvenue ! Voici un aperçu de vos finances.</p>
-          </div>
-
-          <div className={styles.headerActions}>
-            <div className={styles.periodSelector}>
-              <button
-                className={`${styles.periodBtn} ${selectedPeriod === 'week' ? styles.active : ''}`}
-                onClick={() => handlePeriodChange('week')}
-              >
-                Semaine
-              </button>
-              <button
-                className={`${styles.periodBtn} ${selectedPeriod === 'month' ? styles.active : ''}`}
-                onClick={() => handlePeriodChange('month')}
-              >
-                Mois
-              </button>
-              <button
-                className={`${styles.periodBtn} ${selectedPeriod === 'year' ? styles.active : ''}`}
-                onClick={() => handlePeriodChange('year')}
-              >
-                Année
-              </button>
-            </div>
-
-            <button className={styles.refreshBtn} onClick={handleRefreshData} title="Actualiser">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M23 4v6h-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-
-
+        <MonthlyChart />
     </div>
   );
 }

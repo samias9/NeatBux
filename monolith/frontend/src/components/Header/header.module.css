@@ -8,8 +8,17 @@
   font-size: 16px;
 }
 
-.header  nav {
+.navLink {
+    text-decoration: none;
     cursor: pointer;
+    color: inherit;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.navLink:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .leftSide{

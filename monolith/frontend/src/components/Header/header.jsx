@@ -1,17 +1,42 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import styles from './header.module.css'
 
-export default function header() {
+export default function Header() {
   return (
     <div className={styles.header}>
         <div className={styles.leftSide}>
-            <nav style={{fontFamily:"Coiny",color:'var(--secondary-color)',lineHeight: '1.12' ,fontWeight: 'bold', fontSize:'19px', textDecoration:'underline'}}>Home</nav>
-            <nav>All transactions</nav>
-            <nav>Monthly Budget</nav>
-            <nav>Future Projection</nav>
+            <Link
+              to="/dashboard"
+              className={styles.navLink}
+              style={{
+                fontFamily:"Coiny",
+                color:'var(--secondary-color)',
+                lineHeight: '1.12',
+                fontWeight: 'bold',
+                fontSize:'19px',
+                textDecoration:'underline'
+              }}
+            >
+              Home
+            </Link>
+            <Link
+              to="/transactions"
+              className={styles.navLink}
+            >Transactions</Link>
+            <Link
+              to="/monthly-budget"
+              className={styles.navLink}
+            >Monthly Budget</Link>
+            <Link
+              to="/statistics"
+              className={styles.navLink}
+              >Statistics</Link>
         </div>
-        <nav>Account</nav>
+        <Link
+          className={styles.navLink}
+          to="/account"
+        >Account</Link>
     </div>
-
   )
 }
