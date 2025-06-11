@@ -7,7 +7,7 @@ const MonthlyChart = ({ chartData, chartType = 'bar' }) => {
   const chartInstance = useRef(null);
   const [activeChart, setActiveChart] = useState(chartType);
 
-  // Données par défaut si aucune donnée n'est fournie
+  // Données par défaut si aucune donnée n'est fournie ==> juste test data
   const defaultData = {
     labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
     income: [3000, 3200, 2800, 3500, 3100, 3300, 3400, 3600, 3200, 3800, 3500, 4000],
@@ -133,7 +133,6 @@ const MonthlyChart = ({ chartData, chartType = 'bar' }) => {
       options: commonOptions
     };
 
-    // Configuration spécifique pour le graphique en secteurs
     if (type === 'doughnut') {
       const totalIncome = data.income.reduce((a, b) => a + b, 0);
       const totalExpenses = data.expenses.reduce((a, b) => a + b, 0);

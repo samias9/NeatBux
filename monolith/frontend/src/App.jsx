@@ -1,30 +1,35 @@
+// App.jsx
 import './App.css'
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext'; // ← Ajoute ça
 import Dashboard from './Pages/DashBoard/dashboard.jsx';
 import AppLayout from './components/Layout/AppLayout';
-import Transactions from './components/RecentTransactions/recentTransactions';
-import MonthlyChart from './components/MonthlyChart/monthlyChart.jsx';
-import Statistics from './Pages/Statistics/statistics.jsx';
+import AuthLayout from './components/Layout/AuthLayout.jsx';
+import LoginForm from './components/Auth/LoginForm/LoginForm.jsx';
+import RegisterForm from './components/Auth/RegisterForm/RegisterForm.jsx';
 
 function App() {
-
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Routes Auth */}
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Routes Auth */}
+          <Route path='auth' element={<AuthLayout />}>
+            <Route path='login' element={<LoginForm />} />
+            <Route path='register' element={<RegisterForm />} />
+          </Route>
 
-        {/* Redirections */}
-       <Route path="/" element={<AppLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path='transactions' element={<Transactions/>} />
-          <Route path='monthly-budget' element={<div>Not yet</div>} />
-          <Route path='statistics' element={<Statistics />} />
-        </Route>
-        <Route path="*"  element={<div>404 Not Found</div>} />
-      </Routes>
-    </BrowserRouter>
-  )
+          {/* App Routes */}
+          <Route path="/" element={<AppLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+          </Route>
+
+          <Route path="*" element={<div>404 Not Found</div>} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;

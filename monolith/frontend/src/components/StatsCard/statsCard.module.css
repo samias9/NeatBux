@@ -1,4 +1,3 @@
-/* statsCard.module.css */
 .statsCardsContainer {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -35,7 +34,6 @@
   background: linear-gradient(180deg, #6b7280, #9ca3af);
 }
 
-/* Couleurs spécifiques pour chaque type de carte */
 .incomeCard::before {
   background: linear-gradient(180deg, #10b981, #34d399);
 }
@@ -186,7 +184,6 @@
   background: linear-gradient(90deg, #ef4444, #f87171);
 }
 
-/* Couleurs pour les montants selon le solde */
 .balanceCard.positive .statAmount {
   color: #10b981;
 }
@@ -195,7 +192,6 @@
   color: #ef4444;
 }
 
-/* Mode responsive */
 @media (max-width: 768px) {
   .statsCardsContainer {
     grid-template-columns: 1fr;

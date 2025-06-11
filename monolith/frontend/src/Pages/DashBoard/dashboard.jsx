@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../../components/Header/header';
-import StatsCard from '../../components/StatsCard/statsCard';
+
 import MonthlyChart from '../../components/MonthlyChart/monthlyChart';
 import styles from './Dashboard.module.css';
-import RecentTransactions from '../../components/RecentTransactions/recentTransactions';
-
+import StatsCard from '../../components/StatsCard/statsCard'
 export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState({
     stats: {},
@@ -16,13 +14,12 @@ export default function Dashboard() {
 
   const [selectedPeriod, setSelectedPeriod] = useState('month');
 
-  // Simulation de données (à remplacer par des appels API réels)
+  // Simulation de données
   useEffect(() => {
     const fetchDashboardData = async () => {
       setDashboardData(prev => ({ ...prev, loading: true }));
 
       try {
-        // Simulation d'un délai de chargement
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // Données simulées
@@ -129,6 +126,8 @@ export default function Dashboard() {
 
   return (
     <div className={styles.dashboardContainer}>
+        <MonthlyChart />
+        <StatsCard />
         <MonthlyChart />
     </div>
   );
