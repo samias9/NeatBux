@@ -16,7 +16,7 @@ npm run dev (both frontend and backend)
 # Démarrer Redis
 brew install redis
 redis-server (Pour démarrer Redis)
-brew services start redis (démarrer en arrière-plan)
+brew services start redis (démarrer en arrière-plan) ==> brew services stop redis (l'arrêter)
 # Puis lancer server.js
 npm start
 # Tester sur le port 3003
