@@ -7,6 +7,8 @@ import AppLayout from './components/Layout/AppLayout';
 import AuthLayout from './components/Layout/AuthLayout.jsx';
 import LoginForm from './components/Auth/LoginForm/LoginForm.jsx';
 import RegisterForm from './components/Auth/RegisterForm/RegisterForm.jsx';
+import TestAnalytics from './components/TestAnalytics';
+
 function App() {
   return (
     <AuthProvider>
@@ -27,6 +29,8 @@ function App() {
           <Route path="*" element={<div>404 Not Found</div>} />
         </Routes>
       </BrowserRouter>
+      <TestAnalytics />
+
     </AuthProvider>
   );
 }

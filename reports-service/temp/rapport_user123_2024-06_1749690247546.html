@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rapport Mensuel - 2024-06</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        .header { background: #667eea; color: white; padding: 2rem; text-align: center; }
+        .summary { display: flex; justify-content: space-around; margin: 2rem 0; }
+        .card { padding: 1rem; background: #f8f9fa; border-radius: 8px; text-align: center; }
+        .amount { font-size: 1.5rem; font-weight: bold; }
+        .income { color: #28a745; }
+        .expense { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Rapport Mensuel - 2024-06</h1>
+        <p>Utilisateur: user123</p>
+        <p>Généré le: 6/11/2025</p>
+    </div>
+    
+    <div class="summary">
+        <div class="card">
+            <h3>Revenus</h3>
+            <p class="amount income">3 500,00 €</p>
+        </div>
+        <div class="card">
+            <h3>Dépenses</h3>
+            <p class="amount expense">2 800,00 €</p>
+        </div>
+        <div class="card">
+            <h3>Solde</h3>
+            <p class="amount">700,00 €</p>
+        </div>
+    </div>
+    
+    <button onclick="window.print()" style="margin-top: 2rem; padding: 1rem 2rem; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        🖨️ Imprimer PDF
+    </button>
+</body>
+</html>
+    

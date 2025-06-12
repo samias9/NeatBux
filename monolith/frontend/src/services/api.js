@@ -148,7 +148,53 @@ class ApiService {
   async healthCheck() {
     return await this.request('/health');
   }
+
+
 }
 
 const apiService = new ApiService();
+// Remplacez vos analyticsApi et reportsApi par ceci :
+export const analyticsApi = {
+  getStats: async (userId) => {
+    const response = await fetch(`http://localhost:3001/api/analytics/stats/${userId}`);
+    if (!response.ok) throw new Error('Failed to fetch analytics');
+    return response.json();
+  },
+
+  getTrends: async (userId, period) => {
+    const response = await fetch(`http://localhost:3001/api/analytics/trends/${userId}/${period}`);
+    if (!response.ok) throw new Error('Failed to fetch trends');
+    return response.json();
+  },
+
+  getCategories: async (userId) => {
+    const response = await fetch(`http://localhost:3001/api/analytics/categories/${userId}`);
+    if (!response.ok) throw new Error('Failed to fetch categories');
+    return response.json();
+  }
+};
+
+export const reportsApi = {
+  generateMonthly: async (userId, data) => {
+    const response = await fetch(`http://localhost:3001/api/reports/monthly/${userId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error('Failed to generate report');
+    return response.json();
+  },
+
+  getStatus: async (reportId) => {
+    const response = await fetch(`http://localhost:3001/api/reports/status/${reportId}`);
+    if (!response.ok) throw new Error('Failed to get status');
+    return response.json();
+  },
+
+  getHistory: async (userId) => {
+    const response = await fetch(`http://localhost:3001/api/reports/history/${userId}`);
+    if (!response.ok) throw new Error('Failed to get history');
+    return response.json();
+  }
+};
 export default apiService;

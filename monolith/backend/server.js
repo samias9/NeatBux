@@ -5,6 +5,8 @@ const dotenv = require('dotenv');
 
 // Seulement les routes qui existent
 const authRoutes = require('./routes/auth');
+const analyticsRoutes = require('./routes/analytics');
+const reportsRoutes = require('./routes/reports');
 
 dotenv.config();
 
@@ -30,7 +32,8 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/neatbux',
 
 // Routes
 app.use('/api/auth', authRoutes);
-
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/reports', reportsRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {
