@@ -152,7 +152,7 @@ export default function Dashboard() {
       <div className={styles.dashboardContent}>
         <Goals />
         {/* Vous pouvez ajouter d'autres composants ici */}
-        {/* <MonthlyChart /> */}
+         <MonthlyChart />
         {/* <StatsCard /> */}
       </div>
     </div>

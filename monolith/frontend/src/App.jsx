@@ -6,6 +6,8 @@ import TransactionsPage from './Pages/Transactions/TransactionsPage.jsx';
 import AppLayout from './components/Layout/AppLayout';
 import AuthPage from './Pages/Auth/AuthPage.jsx';
 import PrivateRoute from './components/PrivateRoute';
+import AccountPage from './Pages/Account/AccountPage.jsx';
+
 
 // Composant pour rediriger si déjà connecté
 const AuthRedirect = ({ children }) => {
@@ -50,6 +52,8 @@ function AppRoutes() {
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="transactions" element={<TransactionsPage />} />
+        <Route path="account" element={<AccountPage />} />
+
       </Route>
 
       {/* Redirection par défaut */}
