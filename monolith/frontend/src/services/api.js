@@ -144,6 +144,33 @@ class ApiService {
     });
   }
 
+  // Dans services/api.js - AJOUTER ces méthodes après les Budget methods
+
+  // Goal methods
+  async getGoals() {
+    return await this.request('/goals');
+  }
+
+  async createGoal(goalData) {
+    return await this.request('/goals', {
+      method: 'POST',
+      body: JSON.stringify(goalData),
+    });
+  }
+
+  async updateGoal(id, goalData) {
+    return await this.request(`/goals/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(goalData),
+    });
+  }
+
+  async deleteGoal(id) {
+    return await this.request(`/goals/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   // Health check
   async healthCheck() {
     return await this.request('/health');
@@ -197,4 +224,6 @@ export const reportsApi = {
     return response.json();
   }
 };
+
+
 export default apiService;

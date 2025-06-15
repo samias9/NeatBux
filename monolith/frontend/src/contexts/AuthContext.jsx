@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import apiService from '../services/api';
 
 const AuthContext = createContext();
 
@@ -13,77 +14,66 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Vérifier si l'utilisateur est connecté au chargement
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  const checkAuthStatus = async () => {
+    try {
+      const token = apiService.getToken();
+      if (token) {
+        const userData = await apiService.getCurrentUser();
+        setUser(userData.user);
+        setIsAuthenticated(true);
+      }
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      apiService.removeToken();
+      setIsAuthenticated(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const login = async (credentials) => {
     try {
-      console.log('Attempting login with:', credentials);
-
-      const response = await fetch('http://localhost:3001/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
-      }
-
-      // Store token
-      localStorage.setItem('neatbux_token', data.token);
-      setUser(data.user);
-
-      return data;
+      const response = await apiService.login(credentials);
+      setUser(response.user);
+      setIsAuthenticated(true);
+      return { success: true };
     } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+      return { success: false, error: error.message };
     }
   };
 
   const register = async (userData) => {
     try {
-      console.log('Attempting register with:', userData);
-
-      const response = await fetch('http://localhost:3001/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
-      }
-
-      // Store token
-      localStorage.setItem('neatbux_token', data.token);
-      setUser(data.user);
-
-      return data;
+      const response = await apiService.register(userData);
+      setUser(response.user);
+      setIsAuthenticated(true);
+      return { success: true };
     } catch (error) {
-      console.error('Register error:', error);
-      throw error;
+      return { success: false, error: error.message };
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('neatbux_token');
+    apiService.logout();
     setUser(null);
+    setIsAuthenticated(false);
   };
 
   const value = {
     user,
+    isAuthenticated,
+    loading,
     login,
     register,
     logout,
-    loading,
-    isAuthenticated: !!user
+    checkAuthStatus
   };
 
   return (

@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-
+import { useAuth } from '../../contexts/AuthContext';
 import MonthlyChart from '../../components/MonthlyChart/monthlyChart';
 import styles from './Dashboard.module.css';
 import StatsCard from '../../components/StatsCard/statsCard'
+import TestAnalytics from '../../components/TestAnalytics';
+import Goals from '../../components/Goals/Goals';
+
 export default function Dashboard() {
+  const { user, logout } = useAuth();
   const [dashboardData, setDashboardData] = useState({
     stats: {},
     chartData: {},
@@ -126,9 +130,31 @@ export default function Dashboard() {
 
   return (
     <div className={styles.dashboardContainer}>
-        <MonthlyChart />
-        <StatsCard />
-        <MonthlyChart />
+      {/* Header avec le nom d'utilisateur */}
+      <div className={styles.dashboardHeader}>
+        <div className={styles.welcomeSection}>
+          <h1>Bonjour {user?.name} ! 👋</h1>
+          <p>Voici un aperçu de vos finances</p>
+        </div>
+        <div className={styles.userActions}>
+          <span className={styles.userEmail}>{user?.email}</span>
+          <button
+            className={styles.logoutBtn}
+            onClick={logout}
+            title="Se déconnecter"
+          >
+            🚪 Déconnexion
+          </button>
+        </div>
+      </div>
+
+      {/* Contenu du dashboard */}
+      <div className={styles.dashboardContent}>
+        <Goals />
+        {/* Vous pouvez ajouter d'autres composants ici */}
+        {/* <MonthlyChart /> */}
+        {/* <StatsCard /> */}
+      </div>
     </div>
   );
 }
