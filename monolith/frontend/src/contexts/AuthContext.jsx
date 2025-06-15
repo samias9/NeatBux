@@ -66,6 +66,11 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
+  const updateUser = (userData) => {
+    console.log('Updating user with:', userData);
+    setUser(prev => ({ ...prev, ...userData }));
+  };
+
   const value = {
     user,
     isAuthenticated,
@@ -73,7 +78,8 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    checkAuthStatus
+    checkAuthStatus,
+    updateUser,
   };
 
   return (

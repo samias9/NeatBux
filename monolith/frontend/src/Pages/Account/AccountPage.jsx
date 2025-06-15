@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import apiService from '../../services/api';
 import styles from './AccountPage.module.css';
@@ -26,7 +26,7 @@ const AccountPage = () => {
   ];
 
   // Mettre à jour formData quand user change
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       setFormData({
         name: user.name || '',
@@ -166,6 +166,17 @@ const AccountPage = () => {
 
   return (
     <div className={styles.container}>
+      {/* Debug info - supprimez en production */}
+      <div style={{
+        background: '#f0f9ff',
+        padding: '5px 10px',
+        fontSize: '12px',
+        borderRadius: '4px',
+        marginBottom: '10px'
+      }}>
+        🔄 Hot Reload Test - {new Date().toLocaleTimeString()}
+      </div>
+
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.userInfo}>
@@ -293,6 +304,27 @@ const AccountPage = () => {
             )}
           </div>
         </form>
+      </div>
+
+      {/* Statistiques utilisateur */}
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <h2>📊 Statistiques du Compte</h2>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px' }}>
+          <div style={{ padding: '15px', background: '#f8fafc', borderRadius: '8px' }}>
+            <div style={{ fontSize: '0.9rem', color: '#64748b' }}>Devise Active</div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#1e293b' }}>
+              {user?.currency || 'EUR'}
+            </div>
+          </div>
+          <div style={{ padding: '15px', background: '#f8fafc', borderRadius: '8px' }}>
+            <div style={{ fontSize: '0.9rem', color: '#64748b' }}>Compte créé</div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#1e293b' }}>
+              {formatDate(user?.createdAt)}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Zone de danger */}
