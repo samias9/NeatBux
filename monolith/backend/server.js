@@ -3,11 +3,12 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
-// Seulement les routes qui existent
 const authRoutes = require('./routes/auth');
 const analyticsRoutes = require('./routes/analytics');
 const reportsRoutes = require('./routes/reports');
-
+const goalsRoutes = require('./routes/goals');
+const transactionsRoutes = require('./routes/transactions');
+const profileRoutes = require('./routes/profile');
 dotenv.config();
 
 const app = express();
@@ -34,6 +35,10 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/neatbux',
 app.use('/api/auth', authRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/reports', reportsRoutes);
+app.use('/api/goals', goalsRoutes);
+app.use('/api/transactions', transactionsRoutes);
+app.use('/api/profile', profileRoutes);
+
 
 // Health check route
 app.get('/api/health', (req, res) => {

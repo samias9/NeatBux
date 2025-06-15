@@ -74,11 +74,20 @@ router.post('/login', async (req, res) => {
 // Get current user
 router.get('/me', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.userId);
-    res.json({ user });
+    // req.user est déjà défini par le middleware auth
+    res.json({
+      success: true,
+      user: {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        currency: req.user.currency
+      }
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
+
 
 module.exports = router;
