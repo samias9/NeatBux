@@ -166,16 +166,6 @@ const AccountPage = () => {
 
   return (
     <div className={styles.container}>
-      {/* Debug info - supprimez en production */}
-      <div style={{
-        background: '#f0f9ff',
-        padding: '5px 10px',
-        fontSize: '12px',
-        borderRadius: '4px',
-        marginBottom: '10px'
-      }}>
-        🔄 Hot Reload Test - {new Date().toLocaleTimeString()}
-      </div>
 
       {/* Header */}
       <div className={styles.header}>
