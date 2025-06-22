@@ -1,99 +1,158 @@
 // MicroService/Analytique/src/index.js
-const express = require("express");
-require("dotenv").config();
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
+
+// Imports locaux
+const connectDB = require('./config/database');
+const analyticsRoutes = require('./routes/analytics.routes');
 
 const app = express();
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3001;
 
-console.log('🔄 Démarrage du service Analytics...');
+console.log('🚀 Démarrage du service Analytics...');
 
-// Middleware CORS très simple
+// Connexion à la base de données
+connectDB();
+
+// Middlewares
+app.use(cors({
+  origin: [
+    'http://localhost:5173',  // Frontend Vite
+    'http://localhost:3001',  // Backend monolithe
+    'http://localhost:3002'   // Service Analytics
+  ],
+  credentials: true
+}));
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Middleware de logging
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  const timestamp = new Date().toISOString();
+  console.log(`📥 ${timestamp} - ${req.method} ${req.path}`);
 
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+  // Log des headers d'auth pour debug
+  if (req.headers.authorization) {
+    console.log(`🔑 Token présent: ${req.headers.authorization.substring(0, 20)}...`);
   }
+
   next();
 });
 
-app.use(express.json());
-
-// Logging simple
-app.use((req, res, next) => {
-  console.log(`📥 ${req.method} ${req.url}`);
-  next();
-});
-
-// Routes définies de manière très explicite
+// Routes de santé (sans auth)
 app.get('/health', (req, res) => {
-  console.log('✅ Health check appelé');
   res.json({
     status: 'OK',
     service: 'Analytics',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    database: 'Connected',
+    version: '1.0.0'
   });
 });
 
-app.get('/analytics/stats', (req, res) => {
-  console.log('📊 Stats appelé');
-  const data = {
-    total: 1340,
-    average: 167.5
-  };
-  res.json(data);
+app.get('/info', (req, res) => {
+  res.json({
+    service: 'Budget Tracker - Analytics Service',
+    version: '1.0.0',
+    description: 'Service de calcul et d\'analyse des données financières',
+    endpoints: {
+      analytics: '/analytics/*',
+      health: '/health',
+      info: '/info'
+    },
+    features: [
+      'Calcul de statistiques financières',
+      'Génération de tendances',
+      'Prévisions basiques',
+      'Synchronisation avec le monolithe',
+      'Cache des données calculées'
+    ]
+  });
 });
 
-app.get('/analytics/trends', (req, res) => {
-  console.log('📈 Trends appelé');
-  const data = {
-    "2025-01": 370,
-    "2025-02": 265,
-    "2025-03": 390,
-    "2025-04": 315
-  };
-  res.json(data);
+// Routes analytics (avec auth)
+app.use('/analytics', analyticsRoutes);
+
+// Middleware de gestion d'erreurs globales
+app.use((err, req, res, next) => {
+  console.error('💥 Erreur globale:', err);
+
+  // Erreur JWT
+  if (err.name === 'UnauthorizedError') {
+    return res.status(401).json({
+      success: false,
+      error: 'Token invalide',
+      message: err.message
+    });
+  }
+
+  // Erreur MongoDB
+  if (err.name === 'MongoError' || err.name === 'ValidationError') {
+    return res.status(400).json({
+      success: false,
+      error: 'Erreur base de données',
+      message: err.message
+    });
+  }
+
+  // Erreur générique
+  res.status(500).json({
+    success: false,
+    error: 'Erreur interne du serveur',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Une erreur est survenue'
+  });
 });
 
-app.get('/analytics/forecast', (req, res) => {
-  console.log('🔮 Forecast appelé');
-  const data = {
-    nextMonthPrediction: 335
-  };
-  res.json(data);
-});
-
-// Catch all pour debugging
+// Route 404
 app.use('*', (req, res) => {
   console.log(`❌ Route non trouvée: ${req.method} ${req.originalUrl}`);
   res.status(404).json({
+    success: false,
     error: 'Route non trouvée',
-    method: req.method,
     path: req.originalUrl,
-    message: 'Vérifiez l\'URL et réessayez'
+    availableRoutes: {
+      health: 'GET /health',
+      info: 'GET /info',
+      analytics: {
+        stats: 'GET /analytics/stats',
+        trends: 'GET /analytics/trends',
+        forecast: 'GET /analytics/forecast',
+        chartData: 'GET /analytics/chart-data',
+        sync: 'POST /analytics/sync',
+        syncStatus: 'GET /analytics/sync-status',
+        recalculate: 'POST /analytics/recalculate'
+      }
+    }
   });
 });
 
-// Gestion d'erreurs
-app.use((err, req, res, next) => {
-  console.error('💥 Erreur:', err.message);
-  res.status(500).json({ error: 'Erreur serveur' });
-});
-
-app.listen(PORT, '0.0.0.0', (err) => {
-  if (err) {
-    console.error('❌ Erreur lors du démarrage:', err);
-    process.exit(1);
-  }
-
-  console.log(`🚀 Analytics service démarré avec succès !`);
+// Démarrage du serveur
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🎉 Analytics Service démarré avec succès !`);
   console.log(`📍 Port: ${PORT}`);
   console.log(`🌐 URLs de test:`);
-  console.log(`   http://localhost:${PORT}/health`);
-  console.log(`   http://localhost:${PORT}/analytics/stats`);
-  console.log(`   http://localhost:${PORT}/analytics/trends`);
-  console.log(`   http://localhost:${PORT}/analytics/forecast`);
+  console.log(`   Health: http://localhost:${PORT}/health`);
+  console.log(`   Info: http://localhost:${PORT}/info`);
+  console.log(`   Analytics: http://localhost:${PORT}/analytics/*`);
   console.log(`⚡ Service prêt à recevoir des requêtes !`);
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`\n🔧 Variables d'environnement:`);
+    console.log(`   NODE_ENV: ${process.env.NODE_ENV}`);
+    console.log(`   ANALYTICS_MONGODB_URI: ${process.env.ANALYTICS_MONGODB_URI || 'Par défaut'}`);
+    console.log(`   JWT_SECRET: ${process.env.JWT_SECRET ? 'Configuré' : 'NON CONFIGURÉ ⚠️'}`);
+  }
+});
+
+// Gestion des signaux de fermeture
+process.on('SIGTERM', () => {
+  console.log('🛑 SIGTERM reçu, fermeture du serveur...');
+  process.exit(0);
+});
+
+process.on('SIGINT', () => {
+  console.log('🛑 SIGINT reçu, fermeture du serveur...');
+  process.exit(0);
 });
