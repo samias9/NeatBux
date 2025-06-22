@@ -1,0 +1,161 @@
+/* monolith/frontend/src/pages/Analytics/Analytics.module.css */
+
+.analyticsContainer {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Arial', sans-serif;
+}
+
+.analyticsContainer h1 {
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.section h2 {
+  color: var(--secondary-color);
+  border-bottom: 2px solid var(--secondary-color);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+/* Statistiques */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.statCard {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.statCard h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Tendances */
+.trendsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.trendItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  border-left: 4px solid var(--secondary-color);
+}
+
+.month {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.amount {
+  font-size: 18px;
+  color: var(--secondary-color);
+  font-weight: bold;
+}
+
+/* Prévisions */
+.forecastCard {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.forecastCard h3 {
+  margin: 0 0 15px 0;
+  opacity: 0.9;
+}
+
+.forecastValue {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Bouton actualiser */
+.refreshButton {
+  background: var(--secondary-color);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.3s;
+}
+
+.refreshButton:hover {
+  background: var(--primary-color);
+}
+
+/* États de chargement et d'erreur */
+.loading, .error {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+
+.loading {
+  color: var(--secondary-color);
+}
+
+.error {
+  color: #e74c3c;
+  background: #ffeaa7;
+  border-radius: 5px;
+  margin: 20px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .analyticsContainer {
+    padding: 10px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .trendItem {
+    flex-direction: column;
+    text-align: center;
+    gap: 5px;
+  }
+}

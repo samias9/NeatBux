@@ -18,25 +18,25 @@ export default function Header() {
                 textDecoration:'underline'
               }}
             >
-              Home
+              Accueil
             </Link>
             <Link
               to="/transactions"
               className={styles.navLink}
             >Transactions</Link>
             <Link
-              to="/monthly-budget"
+              to="/analytics"
               className={styles.navLink}
-            >Monthly Budget</Link>
+            >Analytique</Link>
             <Link
               to="/statistics"
               className={styles.navLink}
-              >Statistics</Link>
+              >Rapports</Link>
         </div>
         <Link
           className={styles.navLink}
           to="/account"
-        >Account</Link>
+        >Compte</Link>
     </div>
   )
 }

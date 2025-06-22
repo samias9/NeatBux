@@ -1,3 +1,4 @@
+//monolith/backend/models/User.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const { randomUUID } = require('crypto');

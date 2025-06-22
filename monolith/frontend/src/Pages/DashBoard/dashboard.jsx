@@ -5,6 +5,8 @@ import styles from './Dashboard.module.css';
 import StatsCard from '../../components/StatsCard/statsCard'
 import TestAnalytics from '../../components/TestAnalytics';
 import Goals from '../../components/Goals/Goals';
+import AnalyticsDashboard from '../../components/Analytics/AnalyticsDashboard';
+import ReportsGenerator from '../../components/Reports/ReportsGenerator';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -153,6 +155,8 @@ export default function Dashboard() {
         <Goals />
         {/* Vous pouvez ajouter d'autres composants ici */}
          <MonthlyChart />
+         <ReportsGenerator />
+         {/*<AnalyticsDashboard /> /*}
         {/* <StatsCard /> */}
       </div>
     </div>

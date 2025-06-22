@@ -7,6 +7,7 @@ import AppLayout from './components/Layout/AppLayout';
 import AuthPage from './Pages/Auth/AuthPage.jsx';
 import PrivateRoute from './components/PrivateRoute';
 import AccountPage from './Pages/Account/AccountPage.jsx';
+import Analytics from './Pages/Analytics/Analytics.jsx';
 
 
 // Composant pour rediriger si déjà connecté
@@ -53,6 +54,8 @@ function AppRoutes() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="transactions" element={<TransactionsPage />} />
         <Route path="account" element={<AccountPage />} />
+        <Route path="/analytics" element={<Analytics />} />
+
 
       </Route>
 

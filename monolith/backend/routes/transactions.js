@@ -193,4 +193,140 @@ router.get('/categories', async (req, res) => {
   }
 });
 
+router.get('/stats', auth, async (req, res) => {
+    try {
+        const { month, year } = req.query;
+        const userId = req.user.id;
+
+        // Construire le filtre de date
+        let dateFilter = { userId: userId };
+
+        if (year) {
+            const startDate = new Date(year, 0, 1);
+            const endDate = new Date(year, 11, 31, 23, 59, 59);
+            dateFilter.date = { $gte: startDate, $lte: endDate };
+        }
+
+        if (month && year) {
+            const startDate = new Date(year, month - 1, 1);
+            const endDate = new Date(year, month, 0, 23, 59, 59);
+            dateFilter.date = { $gte: startDate, $lte: endDate };
+        }
+
+        // Récupérer toutes les transactions de l'utilisateur pour la période
+        const transactions = await Transaction.find(dateFilter);
+
+        // Calculer les statistiques mensuelles
+        const monthlyData = [];
+
+        for (let i = 1; i <= 12; i++) {
+            const monthStart = new Date(year || new Date().getFullYear(), i - 1, 1);
+            const monthEnd = new Date(year || new Date().getFullYear(), i, 0, 23, 59, 59);
+
+            const monthTransactions = transactions.filter(t =>
+                t.date >= monthStart && t.date <= monthEnd
+            );
+
+            const income = monthTransactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            const expenses = monthTransactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            monthlyData.push({
+                month: i,
+                income: income,
+                expenses: expenses,
+                balance: income - expenses,
+                transactionCount: monthTransactions.length
+            });
+        }
+
+        // Calculer les totaux
+        const totalIncome = monthlyData.reduce((sum, m) => sum + m.income, 0);
+        const totalExpenses = monthlyData.reduce((sum, m) => sum + m.expenses, 0);
+        const totalBalance = totalIncome - totalExpenses;
+        const totalTransactions = transactions.length;
+
+        res.json({
+            success: true,
+            data: {
+                monthlyData,
+                totals: {
+                    income: totalIncome,
+                    expenses: totalExpenses,
+                    balance: totalBalance,
+                    transactionCount: totalTransactions
+                },
+                period: {
+                    month: month ? parseInt(month) : null,
+                    year: year ? parseInt(year) : new Date().getFullYear()
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error('Transaction stats error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Erreur lors de la récupération des statistiques'
+        });
+    }
+});
+
+// Route alternative avec données simulées pour les tests
+router.get('/mock-stats', auth, async (req, res) => {
+    try {
+        const { year } = req.query;
+        const currentYear = year || new Date().getFullYear();
+
+        // Données simulées basées sur la devise de l'utilisateur
+        const monthlyData = [
+            { month: 1, income: 3000, expenses: 2200, balance: 800, transactionCount: 15 },
+            { month: 2, income: 3200, expenses: 2400, balance: 800, transactionCount: 18 },
+            { month: 3, income: 2800, expenses: 2100, balance: 700, transactionCount: 12 },
+            { month: 4, income: 3500, expenses: 2800, balance: 700, transactionCount: 20 },
+            { month: 5, income: 3100, expenses: 2300, balance: 800, transactionCount: 16 },
+            { month: 6, income: 3300, expenses: 2500, balance: 800, transactionCount: 17 },
+            { month: 7, income: 3400, expenses: 2600, balance: 800, transactionCount: 19 },
+            { month: 8, income: 3600, expenses: 2700, balance: 900, transactionCount: 21 },
+            { month: 9, income: 3200, expenses: 2400, balance: 800, transactionCount: 18 },
+            { month: 10, income: 3800, expenses: 2900, balance: 900, transactionCount: 23 },
+            { month: 11, income: 3500, expenses: 2600, balance: 900, transactionCount: 20 },
+            { month: 12, income: 4000, expenses: 3200, balance: 800, transactionCount: 25 }
+        ];
+
+        const totalIncome = monthlyData.reduce((sum, m) => sum + m.income, 0);
+        const totalExpenses = monthlyData.reduce((sum, m) => sum + m.expenses, 0);
+
+        res.json({
+            success: true,
+            data: {
+                monthlyData,
+                totals: {
+                    income: totalIncome,
+                    expenses: totalExpenses,
+                    balance: totalIncome - totalExpenses,
+                    transactionCount: monthlyData.reduce((sum, m) => sum + m.transactionCount, 0)
+                },
+                period: {
+                    month: null,
+                    year: parseInt(currentYear)
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error('Mock stats error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Erreur lors de la génération des statistiques simulées'
+        });
+    }
+});
+
+module.exports = router;
+
 module.exports = router;

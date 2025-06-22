@@ -1,3 +1,4 @@
+//monolith/frontend/src/components/MonthlyChart/monthlyChart.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import apiService from '../../services/api';
