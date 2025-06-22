@@ -1,6 +1,7 @@
-//monolith/frontend/src/components/MonthlyChart/monthlyChart.jsx
+// monolith/frontend/src/components/MonthlyChart/monthlyChart.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import analyticsService from '../../services/analyticsService';
 import apiService from '../../services/api';
 import styles from "./MonthlyChart.module.css";
 import Chart from 'chart.js/auto';
@@ -14,13 +15,6 @@ const MonthlyChart = ({ chartType = 'bar' }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Données par défaut en cas d'erreur
-  const defaultData = {
-    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
-    income: [3000, 3200, 2800, 3500, 3100, 3300, 3400, 3600, 3200, 3800, 3500, 4000],
-    expenses: [2200, 2400, 2100, 2800, 2300, 2500, 2600, 2700, 2400, 2900, 2600, 3200]
-  };
-
   const formatCurrency = (value) => {
     const currency = user?.currency || 'EUR';
     return new Intl.NumberFormat('fr-FR', {
@@ -30,76 +24,49 @@ const MonthlyChart = ({ chartType = 'bar' }) => {
     }).format(value);
   };
 
-  // Récupérer et traiter les transactions directement
+  // Récupérer les données UNIQUEMENT depuis le service Analytics
   const fetchUserFinancialData = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      console.log('Récupération des transactions...');
+      console.log('🔄 Récupération des données Analytics...');
 
-      // Récupérer toutes les transactions de l'année
       const currentYear = new Date().getFullYear();
-      const startDate = `${currentYear}-01-01`;
-      const endDate = `${currentYear}-12-31`;
 
-      const response = await apiService.getTransactions({
-        startDate,
-        endDate,
-        limit: 1000 // Récupérer toutes les transactions
-      });
+      // Appel au service Analytics - SANS fallback
+      const response = await analyticsService.getChartData({ year: currentYear });
 
-      console.log('Transactions récupérées:', response);
+      console.log('📊 Données Analytics reçues:', response);
 
-      if (response && response.transactions && response.transactions.length > 0) {
-        const transactions = response.transactions;
-
-        // Organiser par mois
-        const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
-        const monthlyData = {
-          income: new Array(12).fill(0),
-          expenses: new Array(12).fill(0)
-        };
-
-        // Traiter chaque transaction
-        transactions.forEach(transaction => {
-          const date = new Date(transaction.date);
-          const month = date.getMonth(); // 0-11
-          const amount = parseFloat(transaction.amount) || 0;
-
-          if (transaction.type === 'income') {
-            monthlyData.income[month] += amount;
-          } else if (transaction.type === 'expense') {
-            monthlyData.expenses[month] += amount;
-          }
-        });
-
-        console.log('Données mensuelles calculées:', monthlyData);
-
+      if (response && response.labels && response.income && response.expenses) {
         setChartData({
-          labels: months,
-          income: monthlyData.income,
-          expenses: monthlyData.expenses,
-          totals: {
-            income: monthlyData.income.reduce((a, b) => a + b, 0),
-            expenses: monthlyData.expenses.reduce((a, b) => a + b, 0)
+          labels: response.labels,
+          income: response.income,
+          expenses: response.expenses,
+          totals: response.totals || {
+            income: response.income.reduce((a, b) => a + b, 0),
+            expenses: response.expenses.reduce((a, b) => a + b, 0),
+            balance: response.income.reduce((a, b) => a + b, 0) - response.expenses.reduce((a, b) => a + b, 0)
           }
         });
 
-        if (monthlyData.income.every(x => x === 0) && monthlyData.expenses.every(x => x === 0)) {
-          setError('Aucune transaction trouvée pour cette année');
+        // Vérifier si toutes les données sont à zéro
+        if (response.income.every(x => x === 0) && response.expenses.every(x => x === 0)) {
+          setError('Aucune transaction trouvée. Synchronisez vos données depuis le monolithe.');
+        } else {
+          setError(null);
         }
 
       } else {
-        console.log('Aucune transaction trouvée, utilisation des données par défaut');
-        setChartData(defaultData);
-        setError('Aucune transaction trouvée, affichage des données d\'exemple');
+        setError('Service Analytics indisponible ou données invalides');
+        setChartData(null);
       }
 
     } catch (err) {
-      console.error('Erreur lors de la récupération des données:', err);
-      setError('Erreur de chargement: ' + err.message);
-      setChartData(defaultData);
+      console.error('❌ Erreur lors de la récupération des données Analytics:', err);
+      setError(`Service Analytics: ${err.message}`);
+      setChartData(null);
     } finally {
       setLoading(false);
     }
@@ -109,8 +76,8 @@ const MonthlyChart = ({ chartType = 'bar' }) => {
     if (user) {
       fetchUserFinancialData();
     } else {
-      setChartData(defaultData);
       setLoading(false);
+      setError('Vous devez être connecté pour voir vos données');
     }
   }, [user]);
 
@@ -286,7 +253,7 @@ const MonthlyChart = ({ chartType = 'bar' }) => {
     try {
       chartInstance.current = new Chart(ctx, chartConfig);
     } catch (err) {
-      console.error('Erreur création graphique:', err);
+      console.error('❌ Erreur création graphique:', err);
     }
   };
 
@@ -313,16 +280,30 @@ const MonthlyChart = ({ chartType = 'bar' }) => {
     }
   };
 
-  // Calcul des statistiques du mois actuel
-  const currentMonth = new Date().getMonth();
-  const displayData = chartData || defaultData;
-  const currentIncome = displayData.income[currentMonth] || 0;
-  const currentExpenses = displayData.expenses[currentMonth] || 0;
-  const previousIncome = displayData.income[currentMonth - 1] || 0;
-  const previousExpenses = displayData.expenses[currentMonth - 1] || 0;
+  // Synchroniser avec les vraies données du monolithe
+  const handleSyncRealData = async () => {
+    try {
+      setLoading(true);
+      console.log('🔄 Synchronisation des vraies données du monolithe...');
 
-  const incomeChange = previousIncome ? ((currentIncome - previousIncome) / previousIncome * 100) : 0;
-  const expenseChange = previousExpenses ? ((currentExpenses - previousExpenses) / previousExpenses * 100) : 0;
+      const syncResult = await analyticsService.syncData();
+
+      console.log('📊 Résultat sync vraies données:', syncResult);
+
+      if (syncResult.success) {
+        setTimeout(() => {
+          fetchUserFinancialData();
+        }, 1000);
+      } else {
+        throw new Error(syncResult.message || 'Erreur de synchronisation');
+      }
+
+    } catch (error) {
+      console.error('❌ Erreur synchronisation vraies données:', error);
+      setError(`Erreur sync: ${error.message}`);
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -330,7 +311,7 @@ const MonthlyChart = ({ chartType = 'bar' }) => {
         <div className={styles.chartHeader}>
           <div className={styles.chartTitle}>
             <h3>Analyse Financière Mensuelle</h3>
-            <p>Chargement de vos données...</p>
+            <p>Chargement des données Analytics...</p>
           </div>
         </div>
         <div style={{
@@ -349,11 +330,95 @@ const MonthlyChart = ({ chartType = 'bar' }) => {
             borderRadius: '50%',
             animation: 'spin 1s linear infinite'
           }}></div>
-          <p style={{ color: '#64748b' }}>Récupération de vos transactions...</p>
+          <p style={{ color: '#64748b' }}>Récupération depuis le service Analytics...</p>
         </div>
       </div>
     );
   }
+
+  // Si pas de données ou erreur, afficher un message d'invitation à synchroniser
+  if (!chartData || error) {
+    return (
+      <div className={styles.monthlyChartContainer}>
+        <div className={styles.chartHeader}>
+          <div className={styles.chartTitle}>
+            <h3>Analyse Financière Mensuelle</h3>
+            <p style={{ color: '#f59e0b' }}>
+              {error || 'Aucune donnée disponible'}
+            </p>
+          </div>
+        </div>
+
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '300px',
+          background: '#f8fafc',
+          borderRadius: '12px',
+          border: '2px dashed #e5e7eb',
+          gap: '20px',
+          padding: '40px'
+        }}>
+          <div style={{ fontSize: '48px' }}>📊</div>
+          <h4 style={{ margin: 0, color: '#64748b' }}>Aucune donnée financière disponible</h4>
+          <p style={{
+            textAlign: 'center',
+            color: '#64748b',
+            margin: 0,
+            maxWidth: '400px'
+          }}>
+            Pour afficher vos graphiques, synchronisez vos données depuis le monolithe ou vérifiez que le service Analytics fonctionne correctement.
+          </p>
+
+          <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+            <button
+              onClick={handleSyncRealData}
+              style={{
+                padding: '12px 24px',
+                background: '#3b82f6',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: 'white'
+              }}
+            >
+              📊 Synchroniser Mes Données
+            </button>
+
+            <button
+              onClick={handleRefresh}
+              style={{
+                padding: '12px 24px',
+                background: '#f8fafc',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#475569'
+              }}
+            >
+              🔄 Réessayer
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Calcul des statistiques du mois actuel
+  const currentMonth = new Date().getMonth();
+  const currentIncome = chartData.income[currentMonth] || 0;
+  const currentExpenses = chartData.expenses[currentMonth] || 0;
+  const previousIncome = chartData.income[currentMonth - 1] || 0;
+  const previousExpenses = chartData.expenses[currentMonth - 1] || 0;
+
+  const incomeChange = previousIncome ? ((currentIncome - previousIncome) / previousIncome * 100) : 0;
+  const expenseChange = previousExpenses ? ((currentExpenses - previousExpenses) / previousExpenses * 100) : 0;
 
   return (
     <div className={styles.monthlyChartContainer}>
@@ -361,11 +426,7 @@ const MonthlyChart = ({ chartType = 'bar' }) => {
         <div className={styles.chartTitle}>
           <h3>Analyse Financière Mensuelle</h3>
           <p>
-            {error ? (
-              <span style={{ color: '#f59e0b' }}>⚠️ {error}</span>
-            ) : (
-              `Évolution de vos revenus et dépenses pour ${new Date().getFullYear()}`
-            )}
+            Données réelles du service Analytics pour {new Date().getFullYear()}
           </p>
         </div>
 
@@ -382,9 +443,26 @@ const MonthlyChart = ({ chartType = 'bar' }) => {
               fontWeight: '500',
               color: '#475569'
             }}
-            title="Actualiser les données"
+            title="Actualiser les données Analytics"
           >
             🔄 Actualiser
+          </button>
+
+          <button
+            onClick={handleSyncRealData}
+            style={{
+              padding: '0.5rem 0.75rem',
+              background: '#3b82f6',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              color: 'white'
+            }}
+            title="Synchroniser avec vos vraies données du monolithe"
+          >
+            📊 Synchroniser Données
           </button>
 
           <div className={styles.chartControls}>
@@ -442,12 +520,12 @@ const MonthlyChart = ({ chartType = 'bar' }) => {
         <div className={styles.statItem}>
           <span className={styles.statLabel}>Total année</span>
           <span className={`${styles.statValue} ${
-            (displayData.totals?.income || displayData.income.reduce((a, b) => a + b, 0)) -
-            (displayData.totals?.expenses || displayData.expenses.reduce((a, b) => a + b, 0)) >= 0 ? styles.income : styles.expense
+            (chartData.totals?.income || chartData.income.reduce((a, b) => a + b, 0)) -
+            (chartData.totals?.expenses || chartData.expenses.reduce((a, b) => a + b, 0)) >= 0 ? styles.income : styles.expense
           }`}>
             {formatCurrency(
-              (displayData.totals?.income || displayData.income.reduce((a, b) => a + b, 0)) -
-              (displayData.totals?.expenses || displayData.expenses.reduce((a, b) => a + b, 0))
+              (chartData.totals?.income || chartData.income.reduce((a, b) => a + b, 0)) -
+              (chartData.totals?.expenses || chartData.expenses.reduce((a, b) => a + b, 0))
             )}
           </span>
         </div>
